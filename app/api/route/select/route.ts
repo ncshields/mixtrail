@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { Polyline, UserPrefs, CacheCandidate } from "@app/lib/schemas";
-import { scoreCandidate, greedySpacedPicks } from "@app/lib/scoring";
+import { Polyline, UserPrefs, CacheCandidate } from "@/lib/schemas";
+import { scoreCandidate, greedySpacedPicks } from "@/lib/scoring";
 export const runtime = "edge";
 
 export async function POST(req: NextRequest){

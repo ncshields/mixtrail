@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Polyline, UserPrefs } from "@/app/lib/schemas";
-import { mockCandidatesForRoute } from "@/app/lib/mock-candidates";
+import { Polyline, UserPrefs } from "@/lib/schemas";
+import { mockCandidatesForRoute } from "@/lib/mock-candidates";
 export const runtime = "edge";
 
 export async function POST(req: NextRequest){

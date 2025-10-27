@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Polyline } from "@/app/lib/schemas";
+import { Polyline } from "@/lib/schemas";
 
 export const runtime = "edge";
 

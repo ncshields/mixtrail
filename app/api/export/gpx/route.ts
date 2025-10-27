@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { Polyline, CacheCandidate } from "@app/lib/schemas";
+import { Polyline, CacheCandidate } from "@/lib/schemas";
 export const runtime="edge";
 
 const Body = z.object({

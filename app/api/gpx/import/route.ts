@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { XMLParser } from "fast-xml-parser";
-import { Polyline } from "@app/lib/schemas";
-import { lineDistanceKm } from "@app/lib/geo";
+import { Polyline } from "@/lib/schemas";
+import { lineDistanceKm } from "@/lib/geo";
 export const runtime = "edge";
 
 function arr<T>(x:T|T[]|undefined):T[]{ if(!x) return []; return Array.isArray(x)?x:[x]; }
