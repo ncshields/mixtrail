@@ -60,6 +60,7 @@
     "fast-xml-parser": "^4.4.0"
   },
   "devDependencies": {
+    "@types/maplibre-gl": "^2.4.8",
     "@babel/core": "^7.27.1",
     "@babel/plugin-syntax-flow": "^7.27.1",
     "@babel/plugin-transform-optional-chaining": "^7.27.1",
