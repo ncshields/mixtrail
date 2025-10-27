@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mockCandidatesForRoute } from "@/lib/mock-candidates";
-import { Polyline, UserPrefs } from "@/lib/schemas";
 import { z } from "zod";
+import { Polyline, UserPrefs } from "@/lib/schemas";
+import { mockCandidatesForRoute } from "@/lib/mock-candidates";
 
 export const runtime = "edge";
 
-// Type the incoming JSON explicitly so req.json() (unknown) is parsed safely
 const Body = z.object({
   polyline: Polyline,
   prefs: UserPrefs,

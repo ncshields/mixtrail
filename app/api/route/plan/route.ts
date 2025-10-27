@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Polyline } from "@/lib/schemas";
+import { z } from "zod";
 
 export const runtime = "edge";
 
@@ -21,6 +22,21 @@ function haversineKm(a: Pt, b: Pt): number {
   const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
   return 2 * R * Math.asin(Math.sqrt(h));
 }
+
+// --- Zod schema for ORS response ---
+const ORS = z.object({
+  features: z.array(
+    z.object({
+      geometry: z.object({
+        coordinates: z.array(z.tuple([z.number(), z.number(), z.number().optional()])),
+      }),
+      properties: z.object({
+        segments: z.array(z.object({ distance: z.number() })).default([]),
+        ascent: z.number().optional(),
+      }),
+    })
+  ),
+});
 
 export async function POST(req: NextRequest) {
   const body = (await req.json()) as {
@@ -52,16 +68,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `ORS error: ${msg}` }, { status: 500 });
   }
 
-  const data: {
-    features: Array<{
-      geometry: { coordinates: Array<[number, number, number?]> };
-      properties: { segments: Array<{ distance: number }>; ascent?: number };
-    }>;
-  } = await res.json();
+  // ✅ Parse and validate instead of assuming a type
+  const data = ORS.parse(await res.json());
 
-  const line = data?.features?.[0]?.geometry?.coordinates ?? [];
-  const distance_m = data?.features?.[0]?.properties?.segments?.[0]?.distance ?? 0;
-  const ascent_m = data?.features?.[0]?.properties?.ascent ?? 0;
+  const line = data.features[0]?.geometry?.coordinates ?? [];
+  const distance_m = data.features[0]?.properties?.segments?.[0]?.distance ?? 0;
+  const ascent_m = data.features[0]?.properties?.ascent ?? 0;
 
   const points: Pt[] = line.map((c) => ({ lng: c[0], lat: c[1] }));
 
@@ -69,12 +81,12 @@ export async function POST(req: NextRequest) {
   let km = 0;
   for (let i = 0; i < points.length; i++) {
     const p = points[i]!;
-    const z = line[i]?.[2];
+    const zVal = line[i]?.[2];
     if (i > 0) {
       const dx = haversineKm(points[i - 1]!, p);
       km += dx;
     }
-    elevation_samples.push({ km, m: typeof z === "number" ? z : 0 });
+    elevation_samples.push({ km, m: typeof zVal === "number" ? zVal : 0 });
   }
 
   const poly = Polyline.parse({
