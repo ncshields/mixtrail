@@ -1,4 +1,4 @@
-import { Planner } from "@/components/Planner";
+import Planner from "@/components/Planner";
 
 export default function Page() {
   return (
