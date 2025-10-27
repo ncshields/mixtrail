@@ -5,11 +5,15 @@ import { greedySpacedPicks, scoreCandidate } from "@/lib/scoring";
 
 export const runtime = "edge";
 
+// Validate and type the incoming body
+const Body = z.object({
+  polyline: Polyline,
+  prefs: UserPrefs,
+  candidates: z.array(CacheCandidate),
+});
+
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-  const _poly = Polyline.parse(body.polyline);
-  const prefs = UserPrefs.parse(body.prefs);
-  const candidates = z.array(CacheCandidate).parse(body.candidates);
+  const { polyline: _poly, prefs, candidates } = Body.parse(await req.json());
 
   const scored = candidates
     .map((c) => ({ ...c, score: scoreCandidate(c, prefs) }))
